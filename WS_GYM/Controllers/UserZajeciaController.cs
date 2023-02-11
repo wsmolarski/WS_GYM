@@ -24,7 +24,14 @@ namespace WS_GYM.Controllers
         // GET: UserZajecia
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Zajecia.ToListAsync());
+             List<Zajecia> zajecia = await _context.Zajecia.Include(i => i.ZajeciaUsers).ToListAsync();
+
+            foreach(var z in zajecia)
+            {
+                z.IsSigned = z.ZajeciaUsers.Any(a=>a.UserId == User.GetId());
+            }
+
+            return View(zajecia);
         }
 
         // GET: UserZajecia/Details/5
@@ -43,6 +50,43 @@ namespace WS_GYM.Controllers
             }
 
             return View(zajecia);
+        }
+
+        public async Task<IActionResult> SignUp(int? id)
+        {
+            Karnet k = _context.Karnety.FirstOrDefault(f => f.UserId == User.GetId());
+
+            if (k == null || !k.Active)
+            {
+                ViewBag["msg"] = "Brak aktywnego karnetu."; //tu poprawic zeby bylo widac 
+                return RedirectToAction(nameof(Index));
+            }
+
+
+            if (id.HasValue && !_context.ZajeciaUser.Any(a => a.ZajeciaId == id && a.UserId == User.GetId()))
+            {
+                ZajeciaUser zajeciaUser = new ZajeciaUser();
+                zajeciaUser.ZajeciaId = id.GetValueOrDefault();
+                zajeciaUser.UserId = User.GetId();
+                zajeciaUser.Zajecia = await _context.Zajecia.FindAsync(id);
+
+                _context.ZajeciaUser.Add(zajeciaUser);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> SignOut(int? id)
+        {
+            if (id.HasValue && _context.ZajeciaUser.Any(a => a.ZajeciaId == id && a.UserId == User.GetId()))
+            {
+                var z = _context.ZajeciaUser.First(f => f.ZajeciaId == id && f.UserId == User.GetId());
+                _context.Remove(z);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         private bool ZajeciaExists(int id)

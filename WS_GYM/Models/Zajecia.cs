@@ -1,4 +1,6 @@
-﻿namespace WS_GYM.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace WS_GYM.Models
 {
     public class Zajecia
     {
@@ -7,6 +9,9 @@
         public string Description { get; set; }
         public DateTime Start { get; set; }
         public DateTime End { get; set; }
+
+        [NotMapped]
+        public bool IsSigned { get; set; }
 
         public ICollection<ZajeciaUser>? ZajeciaUsers { get; set; }
     }

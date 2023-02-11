@@ -41,7 +41,15 @@
                 @Html.DisplayFor(modelItem => item.End)
             </td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+             @if(item.IsSigned)
+                    {
+                        <span>Zapisany</span> <a asp-action="SignOut" asp-route-id="@item.Id">SignOut</a>
+                    }
+                    else 
+                    {
+                        <a asp-action="SignUp" asp-route-id="@item.Id">SignUp</a>
+                    }
             </td>
         </tr>
 }

@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WS_GYM.styles.css" asp-append-version="true" />
+    <style>
+        .banner {
+            border-radius: 10px;
+            margin-bottom: 3%;
+            background: url(https://image.winudf.com/v2/image/Y29tLkRyZWFtV2FsbHBhcGVycy5HeW0wMV9zY3JlZW5fMl93Z25vbmZsNA/screen-2.jpg?fakeurl=1&type=.webp) no-repeat;
+            background-size: cover;
+            height: 180px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -51,6 +61,9 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <div class="banner p-3 bg-dark">
+                <h1 class="text-white fw-bold">WS GYM</h1>
+            </div>
             @RenderBody()
         </main>
     </div>

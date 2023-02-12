@@ -31,6 +31,7 @@ namespace WS_GYM.Controllers
                 z.IsSigned = z.ZajeciaUsers.Any(a=>a.UserId == User.GetId());
             }
 
+            ViewData["msg"] = HttpContext.Session.GetString("msg");
             return View(zajecia);
         }
 
@@ -58,7 +59,7 @@ namespace WS_GYM.Controllers
 
             if (k == null || !k.Active)
             {
-                ViewBag["msg"] = "Brak aktywnego karnetu."; //tu poprawic zeby bylo widac 
+                HttpContext.Session.SetString("msg", "Brak aktywnego karnetu.");
                 return RedirectToAction(nameof(Index));
             }
 

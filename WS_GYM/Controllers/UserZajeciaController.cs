@@ -24,14 +24,19 @@ namespace WS_GYM.Controllers
         // GET: UserZajecia
         public async Task<IActionResult> Index()
         {
-             List<Zajecia> zajecia = await _context.Zajecia.Include(i => i.ZajeciaUsers).ToListAsync();
+            List<Zajecia> zajecia = await _context.Zajecia.Include(i => i.ZajeciaUsers).ToListAsync();
+            Karnet k = _context.Karnety.FirstOrDefault(f => f.UserId == User.GetId());
 
-            foreach(var z in zajecia)
+            foreach (var z in zajecia)
             {
                 z.IsSigned = z.ZajeciaUsers.Any(a=>a.UserId == User.GetId());
             }
 
-            ViewData["msg"] = HttpContext.Session.GetString("msg");
+            if (k == null || !k.Active)
+            {
+                ViewData["msg"] = HttpContext.Session.GetString("msg");
+            }
+
             return View(zajecia);
         }
 
@@ -56,13 +61,14 @@ namespace WS_GYM.Controllers
         public async Task<IActionResult> SignUp(int? id)
         {
             Karnet k = _context.Karnety.FirstOrDefault(f => f.UserId == User.GetId());
+            
 
             if (k == null || !k.Active)
             {
                 HttpContext.Session.SetString("msg", "Brak aktywnego karnetu.");
                 return RedirectToAction(nameof(Index));
-            }
 
+            }
 
             if (id.HasValue && !_context.ZajeciaUser.Any(a => a.ZajeciaId == id && a.UserId == User.GetId()))
             {
